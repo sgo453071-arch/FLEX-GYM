@@ -104,7 +104,7 @@
     walk(el);
     // words already on screen wait for the intro loader to wipe away
     var wait = intro && el.getBoundingClientRect().top < window.innerHeight ? (INTRO_MS + 450) / 1000 : 0;
-    $(".w > span", el).forEach(function (s, i) { s.style.transitionDelay = (wait + i * 0.06) + "s"; });
+    $$(".w > span", el).forEach(function (s, i) { s.style.transitionDelay = (wait + i * 0.06) + "s"; });
   });
 
   /* ---------- reveal + counters ---------- */
@@ -117,8 +117,11 @@
       if (p < 1) requestAnimationFrame(step);
     });
   }
+  var revealAll = function () { $$(".rv, .split").forEach(function (el) { el.classList.add("in"); }); };
   if ("IntersectionObserver" in window) {
+    var ioFired = false;
     var io = new IntersectionObserver(function (es) {
+      ioFired = true;
       es.forEach(function (e) {
         if (!e.isIntersecting) return;
         e.target.classList.add("in");
@@ -126,8 +129,14 @@
         io.unobserve(e.target);
       });
     }, { rootMargin: "0px 0px -8% 0px", threshold: 0.1 });
-    $$(".rv, .split, [data-count]").forEach(function (el) { io.observe(el); });
-  } else { $$(".rv, .split").forEach(function (el) { el.classList.add("in"); }); }
+    $$(".rv, .split, [data-count]").forEach(function (el) {
+      // anything already on screen shows straight away, no waiting on the observer
+      if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add("in");
+      io.observe(el);
+    });
+    // safety net: if the observer never reports, never leave content invisible
+    setTimeout(function () { if (!ioFired) revealAll(); }, 2500);
+  } else { revealAll(); }
 
   /* ---------- open / closed + doors countdown (India time) ---------- */
   function ist() {
@@ -390,4 +399,7 @@
   });
 
   $$("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
+
+  // tells the <head> safety net the script ran to the end
+  window.flexReady = true;
 })();

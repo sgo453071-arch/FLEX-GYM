@@ -9,7 +9,7 @@ http.createServer((req, res) => {
   if (!f.startsWith(root)) { res.writeHead(403); return res.end(); }
   fs.readFile(f, (e, d) => {
     if (e) { res.writeHead(404); return res.end('404'); }
-    res.writeHead(200, { 'Content-Type': (types[path.extname(f)] || 'application/octet-stream') + '; charset=utf-8' });
+    res.writeHead(200, { 'Content-Type': (types[path.extname(f)] || 'application/octet-stream') + '; charset=utf-8', 'Cache-Control': 'no-cache' });
     res.end(d);
   });
 }).listen(5500);
