@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;600&display=swap">
 <link rel="stylesheet" href="assets/css/style.css">
-<script>document.documentElement.classList.add("js")</script>
+<script>(function(d){d.classList.add("js");var s,n;try{n=performance.getEntriesByType("navigation")[0];s=sessionStorage.getItem("flex-intro");sessionStorage.setItem("flex-intro","1")}catch(e){}if((!s||(n&&n.type==="reload"))&&!matchMedia("(prefers-reduced-motion: reduce)").matches)d.classList.add("intro")})(document.documentElement)</script>
 </head>
 <body>
 <!-- @sprite -->
@@ -42,6 +42,18 @@
 </svg>
 <!-- /@sprite -->
 <!-- @header -->
+<div class="intro-loader" aria-hidden="true">
+  <div class="il-mid">
+    <img class="il-logo" src="assets/img/logo-160.webp" width="160" height="129" alt="">
+    <p class="il-name"><span>F</span><span>L</span><span>E</span><span>X</span><span class="sp"></span><span class="r">G</span><span class="r">Y</span><span class="r">M</span></p>
+    <div class="il-bar"><span class="il-side l"><i></i><i></i><i></i></span><span class="il-grip"></span><span class="il-side r"><i></i><i></i><i></i></span></div>
+  </div>
+  <div class="il-foot">
+    <p>Sector 41D · Chandigarh<br><span>Loading the bar</span></p>
+    <b class="il-count">0<span>%</span></b>
+  </div>
+  <div class="il-progress"><i></i></div>
+</div>
 <a class="skip" href="#main">Skip to content</a>
 <header class="top">
   <a class="logo" href="index.html" aria-label="Flex Gym, home">

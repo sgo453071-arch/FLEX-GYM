@@ -618,3 +618,45 @@ h1, h2, h3, h4 { font-family: var(--f-head); font-weight: 800; text-transform: u
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
   .js .rv, .split .w > span { opacity: 1; transform: none; }
 }
+
+/* =========================================================
+   INTRO LOADER: first visit + refresh only (decided in <head>)
+   ========================================================= */
+.intro-loader { display: none; }
+.intro .intro-loader {
+  display: flex; flex-direction: column; position: fixed; inset: 0; z-index: 9999;
+  background: radial-gradient(70vmax 50vmax at 50% 45%, rgba(255,46,62,.16), transparent 60%), radial-gradient(60vmax 40vmax at 100% 0%, rgba(123,60,255,.18), transparent 60%), var(--bg);
+  clip-path: inset(0 0 0 0); transition: clip-path .75s cubic-bezier(.76, 0, .24, 1);
+  animation: il-failsafe 0s 4.5s forwards; /* never block the page if the script fails */
+}
+.intro .intro-loader.out { clip-path: inset(0 0 100% 0); }
+@keyframes il-failsafe { to { visibility: hidden; } }
+.il-mid { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 0 var(--gut); }
+.il-logo { width: 76px; height: auto; opacity: 0; transform: scale(.6) rotate(-12deg); animation: il-pop .7s var(--spring) .05s forwards; filter: drop-shadow(0 0 18px rgba(255,196,0,.35)); }
+@keyframes il-pop { to { opacity: 1; transform: none; } }
+.il-name { margin: 0; display: flex; overflow: hidden; font: 800 clamp(3.6rem, 19vw, 9rem)/.9 var(--f-head); text-transform: uppercase; padding: .04em 0; }
+.il-name span { display: inline-block; transform: translateY(110%); animation: il-rise .6s var(--ease) forwards; }
+.il-name .sp { width: .22em; }
+.il-name .r { color: var(--red); text-shadow: 0 0 30px rgba(255,46,62,.45); }
+.il-name span:nth-child(1) { animation-delay: .1s; } .il-name span:nth-child(2) { animation-delay: .14s; }
+.il-name span:nth-child(3) { animation-delay: .18s; } .il-name span:nth-child(4) { animation-delay: .22s; }
+.il-name span:nth-child(6) { animation-delay: .3s; } .il-name span:nth-child(7) { animation-delay: .34s; }
+.il-name span:nth-child(8) { animation-delay: .38s; }
+@keyframes il-rise { to { transform: none; } }
+/* barbell that loads plates as the counter climbs */
+.il-bar { position: relative; width: min(300px, 78vw); height: 70px; display: flex; align-items: center; justify-content: center; }
+.il-bar::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 6px; margin-top: -3px; border-radius: 3px; background: linear-gradient(180deg, #e9e9ee, #6d6d76); }
+.il-grip { position: relative; width: 60px; height: 10px; border-radius: 3px; background: repeating-linear-gradient(90deg, #6d6d76 0 2px, #a5a5ae 2px 5px); }
+.il-side { position: absolute; top: 50%; display: flex; align-items: center; gap: 3px; transform: translateY(-50%); }
+.il-side.l { right: calc(50% + 36px); flex-direction: row-reverse; }
+.il-side.r { left: calc(50% + 36px); }
+.il-side i { width: 12px; border-radius: 4px; background: var(--red); opacity: 0; transform: scaleY(.3); transition: opacity .25s, transform .45s var(--spring); }
+.il-side i:nth-child(1) { height: 64px; } .il-side i:nth-child(2) { height: 50px; background: var(--red-2); } .il-side i:nth-child(3) { height: 38px; background: var(--violet); }
+.il-side i.on { opacity: 1; transform: none; box-shadow: 0 0 14px rgba(255,46,62,.55); }
+.il-foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 0 var(--gut) 22px; }
+.il-foot p { margin: 0; font: 700 .8rem/1.4 var(--f-head); letter-spacing: .2em; text-transform: uppercase; color: var(--tx-2); }
+.il-foot p span { color: var(--tx-3); }
+.il-count { font: 800 clamp(3.6rem, 18vw, 7rem)/.85 var(--f-head); font-variant-numeric: tabular-nums; }
+.il-count span { color: var(--red); }
+.il-progress { height: 3px; background: rgba(255,255,255,.08); }
+.il-progress i { display: block; height: 100%; background: linear-gradient(90deg, var(--violet), var(--red)); transform-origin: left; transform: scaleX(0); box-shadow: 0 0 12px rgba(255,46,62,.8); }

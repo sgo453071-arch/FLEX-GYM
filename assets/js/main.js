@@ -20,6 +20,34 @@
   var wa = function (msg) { return "https://wa.me/" + SITE.wa + "?text=" + encodeURIComponent(msg); };
   var press = function (group, btn) { group.forEach(function (b) { b.setAttribute("aria-pressed", b === btn); }); };
 
+  /* ---------- intro loader (first visit + refresh) ---------- */
+  var root = document.documentElement, intro = root.classList.contains("intro"), INTRO_MS = 1100;
+  if (intro) {
+    var il = $(".intro-loader"), cnt = $(".il-count", il), bar = $(".il-progress i", il), plates = $$(".il-side i", il), t0, done = false;
+    window.scrollTo(0, 0); root.style.overflow = "hidden";
+    var paint = function (e) {
+      var pct = Math.round(e * 100);
+      cnt.firstChild.nodeValue = pct;
+      bar.style.transform = "scaleX(" + e + ")";
+      plates.forEach(function (pl) { var k = Array.prototype.indexOf.call(pl.parentNode.children, pl); pl.classList.toggle("on", pct >= 30 + k * 25); });
+    };
+    requestAnimationFrame(function step(t) {
+      if (done) return;
+      t0 = t0 || t;
+      var p = Math.min((t - t0) / INTRO_MS, 1);
+      paint(1 - Math.pow(1 - p, 3));
+      if (p < 1) requestAnimationFrame(step);
+    });
+    // a plain timer ends the intro even if animation frames are paused (background tab)
+    setTimeout(function () {
+      done = true; paint(1);
+      setTimeout(function () {
+        il.classList.add("out"); root.style.overflow = "";
+        setTimeout(function () { root.classList.remove("intro"); il.remove(); }, 800);
+      }, 120);
+    }, INTRO_MS);
+  }
+
   /* ---------- contact links ---------- */
   $$("[data-wa]").forEach(function (a) { a.href = wa(a.dataset.wa || "Hi Flex Gym! I'd like to book a free session."); a.target = "_blank"; a.rel = "noopener"; });
   $$("[data-tel]").forEach(function (a) { a.href = "tel:" + SITE.tel; });
@@ -74,7 +102,9 @@
       });
     };
     walk(el);
-    $$(".w > span", el).forEach(function (s, i) { s.style.transitionDelay = (i * 0.06) + "s"; });
+    // words already on screen wait for the intro loader to wipe away
+    var wait = intro && el.getBoundingClientRect().top < window.innerHeight ? (INTRO_MS + 450) / 1000 : 0;
+    $(".w > span", el).forEach(function (s, i) { s.style.transitionDelay = (wait + i * 0.06) + "s"; });
   });
 
   /* ---------- reveal + counters ---------- */
